@@ -3,7 +3,7 @@ var apiKey = "2bfb524657a6f7915271758d4f208cf3";
 var submitButtonEl = document.getElementById('search-btn-1');
 var cityLatitude;
 var cityLongitude;
-
+var cityListEl = $('#city-search-list');
 
 function getCoordinatesApi(searchValue){
     
@@ -16,6 +16,12 @@ function getCoordinatesApi(searchValue){
     })
     .then(function(data){
         //console.log(data);
+
+        var cityItem = localStorage.getItem('cityName'); // get city name from local storage
+        var cityListItemEl = $('<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'); // creates li tag
+
+        cityListItemEl.text(cityItem); //writes local storage text to li tag
+        cityListEl.append(cityListItemEl); // appends li tag to ul tag
 
         cityLatitude = data[0].lat;
         cityLongitude = data[0].lon;
@@ -33,6 +39,7 @@ function getForecastApi(){
     var wind;
     var iconID;
     var weatherForecast = document.getElementById('5-day-forecast');
+    var todayForecast = document.getElementById('today-forecast');
 
     var requestUrl = "http://api.openweathermap.org/data/2.5/forecast?lat=" + cityLatitude + "&lon=" + cityLongitude + "&appid=" + apiKey;
 
@@ -41,15 +48,45 @@ function getForecastApi(){
         return response.json();
     })
     .then(function(data){
-        console.log(data);
+        //console.log(data);
         var newdate = data.list[0].dt_txt.split(" ");
         var today = newdate[0]
-        console.log(today);
-        console.log(data.list[0].main.humidity);
-        console.log(data.list[0].main.temp);
-        console.log(data.list[0].wind.speed);
-        console.log(data.list[0].weather[0].icon);
+        //console.log(today);
+        //console.log(data.list[0].main.humidity);
+        //console.log(data.list[0].main.temp);
+        //console.log(data.list[0].wind.speed);
+        //console.log(data.list[0].weather[0].icon);
 
+        var todayDate = today;
+        var todayTemp = data.list[0].main.temp;
+        var todayHumidity = data.list[0].main.humidity;
+        var todayWind = data.list[0].wind.speed;
+        var todayIcon = data.list[0].weather[0].icon;
+
+        // card container for 5-day weather forecast body 
+        var resultCard1 = document.createElement('div'); // card // csss for this card  
+                
+        // body container for forecast content 
+        var resultBody1 = document.createElement('div'); // body of the card // css for body card 
+
+        resultCard1.append(resultBody1); // appends the body to that card 
+
+        var todayDateEl = document.createElement('h3'); // creates the elemnets fior the body
+        todayDateEl.textContent = todayDate;
+
+        var todayIcon = 'http://openweathermap.org/img/wn/' + todayIcon + '.png';
+        
+        var todayImg = document.createElement("img"); // revert to previous  and then addclass image is -4by3
+        todayImg.src = todayIcon;
+
+        var bodyContentEl1 = document.createElement('p')
+
+        bodyContentEl1.innerHTML += '<strong>Temp:</strong>' + todayTemp + '</br>';
+        bodyContentEl1.innerHTML += '<strong>Wind:</strong>' + todayWind + '</br>';
+        bodyContentEl1.innerHTML += '<strong>Humidity:</strong>' + todayHumidity + '</br>';
+
+        resultBody1.append(todayDateEl, todayImg, bodyContentEl1); // appends the date, temp to the body 
+        todayForecast.append(resultCard1); // append the card to the div in the html 
 
         for(var i = 1; i < data.list.length; i++){
             var newdate = data.list[i].dt_txt.split(" ");
@@ -57,7 +94,7 @@ function getForecastApi(){
             //console.log(newdate);
             var newtime = newdate[1];
 
-            if(newtime == '12:00:00')
+            if(newtime == '00:00:00')
             {
                 //console.log(data.list[i].dt_txt);
                 //dayArray.push(data.list[i].dt_txt);
@@ -113,6 +150,7 @@ submitButtonEl.addEventListener('click',function(){
 
     var searchInputVal = document.getElementById('search-location-1').value;
     //console.log(searchInputVal); 
+    localStorage.setItem('cityName', searchInputVal);
     getCoordinatesApi(searchInputVal) 
 
 })
