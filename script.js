@@ -1,9 +1,11 @@
 var apiKey = "2bfb524657a6f7915271758d4f208cf3";
-
 var submitButtonEl = document.getElementById('search-btn-1');
 var cityLatitude;
 var cityLongitude;
 var cityListEl = $('#city-search-list');
+var weatherForecast = document.getElementById('5-day-forecast');
+var todayForecast = document.getElementById('today-forecast');
+
 
 function getCoordinatesApi(searchValue){
     
@@ -26,6 +28,9 @@ function getCoordinatesApi(searchValue){
         cityLatitude = data[0].lat;
         cityLongitude = data[0].lon;
 
+        todayForecast.textContent = '';
+        weatherForecast.textContent = '';
+
         getForecastApi();
 
     })
@@ -38,8 +43,7 @@ function getForecastApi(){
     var temp;
     var wind;
     var iconID;
-    var weatherForecast = document.getElementById('5-day-forecast');
-    var todayForecast = document.getElementById('today-forecast');
+    
 
     var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + cityLatitude + "&lon=" + cityLongitude + "&appid=" + apiKey;
 
@@ -86,7 +90,7 @@ function getForecastApi(){
         var bodyContentEl1 = document.createElement('p')
 
         bodyContentEl1.innerHTML += '<strong>Temp:</strong>' + todayTemp + " \u212A " + '</br>';
-        bodyContentEl1.innerHTML += '<strong>Wind:</strong>' + todayWind + '</br>';
+        bodyContentEl1.innerHTML += '<strong>Wind:</strong>' + todayWind + " MPH " + '</br>';
         bodyContentEl1.innerHTML += '<strong>Humidity:</strong>' + todayHumidity + " \u0025 " + '</br>';
 
         resultBody1.append(todayDateEl, todayImg, bodyContentEl1); // appends the date, temp to the body 
@@ -135,7 +139,7 @@ function getForecastApi(){
                 var bodyContentEl = document.createElement('p')
 
                 bodyContentEl.innerHTML += '<strong>Temp:</strong>' + temp + " \u212A " + '</br>';
-                bodyContentEl.innerHTML += '<strong>Wind:</strong>' + wind + '</br>';
+                bodyContentEl.innerHTML += '<strong>Wind:</strong>' + wind + " MPH " + '</br>';
                 bodyContentEl.innerHTML += '<strong>Humidity:</strong>' + humidity + " \u0025 " + '</br>';
 
                 
@@ -151,12 +155,15 @@ function getForecastApi(){
     })
 }
 
-submitButtonEl.addEventListener('click',function(){
+submitButtonEl.addEventListener('click',function(event){
+    event.preventDefault();
     //console.log("Test click"); 
-
     var searchInputVal = document.getElementById('search-location-1').value;
     //console.log(searchInputVal); 
     localStorage.setItem('cityName', searchInputVal);
     getCoordinatesApi(searchInputVal) 
 
 })
+
+
+
