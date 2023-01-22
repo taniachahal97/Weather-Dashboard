@@ -41,14 +41,14 @@ function getForecastApi(){
     var weatherForecast = document.getElementById('5-day-forecast');
     var todayForecast = document.getElementById('today-forecast');
 
-    var requestUrl = "http://api.openweathermap.org/data/2.5/forecast?lat=" + cityLatitude + "&lon=" + cityLongitude + "&appid=" + apiKey;
+    var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + cityLatitude + "&lon=" + cityLongitude + "&appid=" + apiKey;
 
     fetch(requestUrl)
     .then(function(response){
         return response.json();
     })
     .then(function(data){
-        //console.log(data);
+        console.log(data);
         var newdate = data.list[0].dt_txt.split(" ");
         var today = newdate[0]
         //console.log(today);
@@ -63,27 +63,31 @@ function getForecastApi(){
         var todayWind = data.list[0].wind.speed;
         var todayIcon = data.list[0].weather[0].icon;
 
+        var cityName = localStorage.getItem('cityName');
+
         // card container for 5-day weather forecast body 
         var resultCard1 = document.createElement('div'); // card // csss for this card  
+        resultCard1.classList.add('card1');
                 
         // body container for forecast content 
         var resultBody1 = document.createElement('div'); // body of the card // css for body card 
+        resultBody1.classList.add('card-body');
 
         resultCard1.append(resultBody1); // appends the body to that card 
 
         var todayDateEl = document.createElement('h3'); // creates the elemnets fior the body
-        todayDateEl.textContent = todayDate;
+        todayDateEl.textContent = cityName + " (" + todayDate + " )";
 
-        var todayIcon = 'http://openweathermap.org/img/wn/' + todayIcon + '.png';
+        var todayIcon = 'https://openweathermap.org/img/wn/' + todayIcon + '.png';
         
         var todayImg = document.createElement("img"); // revert to previous  and then addclass image is -4by3
         todayImg.src = todayIcon;
 
         var bodyContentEl1 = document.createElement('p')
 
-        bodyContentEl1.innerHTML += '<strong>Temp:</strong>' + todayTemp + '</br>';
+        bodyContentEl1.innerHTML += '<strong>Temp:</strong>' + todayTemp + " \u212A " + '</br>';
         bodyContentEl1.innerHTML += '<strong>Wind:</strong>' + todayWind + '</br>';
-        bodyContentEl1.innerHTML += '<strong>Humidity:</strong>' + todayHumidity + '</br>';
+        bodyContentEl1.innerHTML += '<strong>Humidity:</strong>' + todayHumidity + " \u0025 " + '</br>';
 
         resultBody1.append(todayDateEl, todayImg, bodyContentEl1); // appends the date, temp to the body 
         todayForecast.append(resultCard1); // append the card to the div in the html 
@@ -112,9 +116,11 @@ function getForecastApi(){
 
                 // card container for 5-day weather forecast body 
                 var resultCard = document.createElement('div'); // card // csss for this card  
+                resultCard.classList.add('column','card');
                 
                 // body container for forecast content 
                 var resultBody = document.createElement('div'); // body of the card // css for body card 
+                resultBody.classList.add('card-body');
 
                 resultCard.append(resultBody); // appends the body to that card 
 
@@ -128,9 +134,9 @@ function getForecastApi(){
 
                 var bodyContentEl = document.createElement('p')
 
-                bodyContentEl.innerHTML += '<strong>Temp:</strong>' + temp + '</br>';
+                bodyContentEl.innerHTML += '<strong>Temp:</strong>' + temp + " \u212A " + '</br>';
                 bodyContentEl.innerHTML += '<strong>Wind:</strong>' + wind + '</br>';
-                bodyContentEl.innerHTML += '<strong>Humidity:</strong>' + humidity + '</br>';
+                bodyContentEl.innerHTML += '<strong>Humidity:</strong>' + humidity + " \u0025 " + '</br>';
 
                 
 
