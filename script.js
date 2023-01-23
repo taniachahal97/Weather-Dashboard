@@ -5,12 +5,14 @@ var cityLongitude;
 var cityListEl = $('#city-search-list');
 var weatherForecast = document.getElementById('5-day-forecast');
 var todayForecast = document.getElementById('today-forecast');
+var city;
 
 
 function getCoordinatesApi(searchValue){
     
-    var city = searchValue
-    var requestUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&" + "appid=" + apiKey;
+    city = searchValue;
+    console.log(city); //working
+    var requestUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&" + "appid=" + apiKey;
 
     fetch(requestUrl)
     .then(function(response){
@@ -18,12 +20,6 @@ function getCoordinatesApi(searchValue){
     })
     .then(function(data){
         //console.log(data);
-
-        var cityItem = localStorage.getItem('cityName'); // get city name from local storage
-        var cityListItemEl = $('<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'); // creates li tag
-
-        cityListItemEl.text(cityItem); //writes local storage text to li tag
-        cityListEl.append(cityListItemEl); // appends li tag to ul tag
 
         cityLatitude = data[0].lat;
         cityLongitude = data[0].lon;
@@ -67,7 +63,8 @@ function getForecastApi(){
         var todayWind = data.list[0].wind.speed;
         var todayIcon = data.list[0].weather[0].icon;
 
-        var cityName = localStorage.getItem('cityName');
+        //var cityName = localStorage.getItem('cityName');
+        var cityName = city;
 
         // card container for 5-day weather forecast body 
         var resultCard1 = document.createElement('div'); // card // csss for this card  
@@ -131,7 +128,7 @@ function getForecastApi(){
                 var dateEl = document.createElement('h3'); // creates the elemnets fior the body
                 dateEl.textContent = day;
 
-                var icon = 'http://openweathermap.org/img/wn/' + iconID + '.png';
+                var icon = 'https://openweathermap.org/img/wn/' + iconID + '.png';
                 
                 var img = document.createElement("img"); // revert to previous  and then addclass image is -4by3
                 img.src = icon;
@@ -161,9 +158,34 @@ submitButtonEl.addEventListener('click',function(event){
     var searchInputVal = document.getElementById('search-location-1').value;
     //console.log(searchInputVal); 
     localStorage.setItem('cityName', searchInputVal);
-    getCoordinatesApi(searchInputVal) 
 
-})
+    setCityValue();
+    getCoordinatesApi(searchInputVal); 
+
+});
+
+
+
+var ul = document.getElementById('city-search-list');
+ul.onclick = function(event) {
+    //event.preventDefault();
+    var target = event.target.innerHTML;
+    //console.log(target);
+    var citySearchVal = target;
+    getCoordinatesApi(citySearchVal);
+
+    
+};
+
+
+function setCityValue(){
+        var cityItem = localStorage.getItem('cityName'); // get city name from local storage
+        var cityListItemEl = $('<li class="flex-row justify-space-between align-center p-2 bg-light text-dark">'); // creates li tag
+
+        cityListItemEl.text(cityItem); //writes local storage text to li tag
+        cityListEl.append(cityListItemEl); // appends li tag to ul tag
+}
+
 
 
 
